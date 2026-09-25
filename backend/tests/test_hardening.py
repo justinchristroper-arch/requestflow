@@ -97,9 +97,10 @@ def test_cors_and_secret_configuration(client):
 
 
 def test_deployment_database_and_cors_aliases(monkeypatch):
+    monkeypatch.delenv('POSTGRES_PASSWORD')
     monkeypatch.setenv('DATABASE_URL', 'postgresql://demo:secret@database.internal:5432/requestflow')
     monkeypatch.setenv('CORS_ALLOWED_ORIGINS', '["https://requestflow.example"]')
-    settings = Settings(postgres_password='unused', jwt_secret='x' * 32, environment='production')
+    settings = Settings(jwt_secret='x' * 32, environment='production')
     url = settings.sqlalchemy_url()
     assert url.drivername == 'postgresql+psycopg'
     assert url.host == 'database.internal'

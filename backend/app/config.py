@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import AliasChoices, Field, SecretStr, field_validator
+from pydantic import AliasChoices, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL, make_url
 
@@ -15,7 +15,7 @@ class DatabaseSettings(BaseSettings):
     postgres_port: int = 5432
     postgres_db: str = "requestflow"
     postgres_user: str = "requestflow"
-    postgres_password: SecretStr
+    postgres_password: SecretStr | None = None
     database_url: SecretStr | None = None
     cors_origins: list[str] = Field(
         default=["http://localhost:5173", "http://127.0.0.1:5173"],
@@ -38,6 +38,8 @@ class DatabaseSettings(BaseSettings):
             if url.drivername in ("postgres", "postgresql"):
                 url = url.set(drivername="postgresql+psycopg")
             return url
+        if not self.postgres_password:
+            raise ValueError("POSTGRES_PASSWORD is required when DATABASE_URL is not set")
         return URL.create(
             "postgresql+psycopg",
             username=self.postgres_user,
@@ -46,6 +48,12 @@ class DatabaseSettings(BaseSettings):
             port=self.postgres_port,
             database=self.postgres_db,
         )
+
+    @model_validator(mode="after")
+    def database_credentials(self):
+        if not self.database_url and not self.postgres_password:
+            raise ValueError("DATABASE_URL or POSTGRES_PASSWORD must be configured")
+        return self
 
 
 class Settings(DatabaseSettings):

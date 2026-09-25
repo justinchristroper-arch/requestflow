@@ -24,22 +24,26 @@ test and are included in the 116-test result.
 
 ## Hosted
 
-Hosted verification is pending because this machine has no authenticated Railway or
-Vercel CLI session and the repository has no Git remote. No live URL is claimed.
-
 | Check | Status |
 | --- | --- |
-| Frontend URL | Pending account-backed Vercel deployment |
-| Backend URL / health / readiness | Pending Railway deployment |
-| Production migration and seed | Pending Railway project/database |
-| Demo authentication and scenarios A/B/C | Pending hosted URLs |
-| Protected-route refresh, mobile, console, CORS, HTTPS | Pending hosted URLs |
+| Frontend | [https://requestflow-one.vercel.app](https://requestflow-one.vercel.app) — Vercel production deployment Ready |
+| Backend | [https://requestflow-api-production.up.railway.app](https://requestflow-api-production.up.railway.app) — Railway deployment Success |
+| Interactive API docs | [https://requestflow-api-production.up.railway.app/docs](https://requestflow-api-production.up.railway.app/docs) — HTTP 200 |
+| Health and database readiness | `/api/health` and `/api/health/ready` both HTTP 200 |
+| Production migration | Production startup runs `alembic upgrade head`; schema-backed readiness and seed completed |
+| Demo initialization | 5 accounts and 30 synthetic analytics records added; one-time flag removed afterward |
+| Demo authentication | Employee login returned the expected role and a bearer token |
+| Scenario A | Low-cost request passed Employee → Manager → Procurement → Completed |
+| Scenario B | High-cost request passed Employee → Manager → Finance → Procurement → Completed |
+| Scenario C | Admin dashboard rendered against hosted analytics data |
+| Full hosted browser suite | **5 groups passed in 1.8 minutes** against the public URLs |
+| Responsive / sessions | 1440, 1280, 768, and 390 px, deep links, refresh, logout, expiry, and cross-tab logout passed |
+| Browser/runtime | HTTPS throughout; no mixed-content or unexpected console errors reported |
 
-Deployment files, variables, release order, migrations, explicit idempotent seeds,
-SPA routing, security headers, and verification steps are ready in
-[deployment.md](deployment.md). This report must be updated with actual URLs and
-observations after authentication and deployment; placeholders must not be published
-as successful results.
+The hosted browser suite also exercised rejection, cancellation, audit ordering,
+role-specific pages, confirmation handling, validation, loading/empty/recovery states,
+and stale-session races. It added clearly labeled synthetic regression requests to the
+public demo database; it did not delete existing records.
 
 ## Security sanity
 
@@ -49,8 +53,13 @@ as successful results.
   patterns without printing secret values. Only the documented PostgreSQL example and
   its deployment test matched; no private-key/token pattern or local database file matched.
 - Production secrets are runtime/build environment values; none are embedded in the SPA.
-- Exact CORS origins, protected APIs, role/object authorization, generic server errors,
-  and audit protections are covered by automated tests.
+- The live bundle and `/.env` response contain no `JWT_SECRET`, `DATABASE_URL`, or
+  `POSTGRES_PASSWORD` markers.
+- The exact Vercel production origin succeeds in CORS preflight; an unapproved origin
+  is rejected with HTTP 400.
+- Unauthenticated request data returns HTTP 401, unknown-route responses expose no
+  stack markers, and the hosted multi-role suite preserves RBAC boundaries.
+- Railway reports a private database service host and no public PostgreSQL TCP proxy.
 - The documented demo password is intentionally public and must be used only for
   synthetic accounts.
 
@@ -62,7 +71,8 @@ escalation, calendar-day SLA, and a development-oriented local Compose environme
 
 ## Publication status
 
-The source, documentation, tests, screenshots, and deployment configuration are ready
-for GitHub review. Public-demo readiness remains conditional on deploying both hosts,
-running the hosted scenarios, recording real URLs, and repeating the public security
-sanity checks.
+The source, documentation, tests, screenshots, deployment configuration, and public
+demo are ready for a portfolio. Git history is initialized with meaningful commits and
+publication files are clean. No Git remote was supplied or configured, so this report
+does not claim a public GitHub repository URL; the repository is ready to push without
+history rewriting when the owner chooses its GitHub location.

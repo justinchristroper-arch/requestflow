@@ -8,6 +8,13 @@ and spreadsheets with one role-based, auditable workflow from submission to fulf
 > intended for real company requests, personal information, credentials, or other
 > sensitive content.
 
+## Live demo
+
+- **Application:** [https://requestflow-one.vercel.app](https://requestflow-one.vercel.app)
+- **API:** [https://requestflow-api-production.up.railway.app](https://requestflow-api-production.up.railway.app)
+- **Interactive API docs:** [https://requestflow-api-production.up.railway.app/docs](https://requestflow-api-production.up.railway.app/docs)
+- **Source:** [current GitHub repository](.)
+
 ## Overview
 
 The project connects business analysis artifacts to a working application. It includes
@@ -109,8 +116,8 @@ flowchart LR
     A[Alembic] --> P
 ```
 
-Vercel serves the frontend. Railway is prepared to run the FastAPI container and
-PostgreSQL. The backend remains one modular application, not microservices. Read the
+Vercel serves the frontend. Railway runs the FastAPI container and a private
+PostgreSQL service. The backend remains one modular application, not microservices. Read the
 [architecture](docs/system-architecture.md) and [deployment guide](docs/deployment.md).
 
 ## Technology stack
@@ -240,15 +247,14 @@ The full browser suite creates five labeled synthetic requests per run. Read
 
 ## Deployment
 
-Production-ready configuration is included for a Vercel SPA and Railway FastAPI /
-PostgreSQL deployment. It supports Railway's `DATABASE_URL`, injected `PORT`, Alembic
-pre-deploy migrations, readiness checks, exact production CORS origins, Vercel's
-`VITE_API_URL`, and SPA deep-link rewrites. Demo seeding is an explicit idempotent
-one-off operation rather than a destructive startup task.
+The public demo uses a Vercel SPA, Railway FastAPI container, and private Railway
+PostgreSQL service. The production container applies Alembic migrations before Uvicorn,
+uses Railway's injected `PORT`, and restricts CORS to the final Vercel origin. Vercel
+injects `VITE_API_URL` at build time and rewrites SPA deep links to `index.html`.
 
-Live URLs are added only after the account-backed deployment and hosted verification
-succeed. Follow [deployment.md](docs/deployment.md) for variables, release order, seed,
-and security checks.
+The demo accounts and 30 analytics records were seeded through an explicit, idempotent
+one-time flag; that flag was removed after initialization. Follow
+[deployment.md](docs/deployment.md) for the exact release and verification process.
 
 ## Project documentation
 
