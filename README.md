@@ -264,7 +264,7 @@ one-time flag; that flag was removed after initialization. Follow
 | Requirements | [Mini-BRD](docs/business-requirements.md) · [User stories](docs/user-stories.md) · [Business rules](docs/business-rules.md) |
 | Design | [Architecture](docs/system-architecture.md) · [Database/ERD](docs/database-design.md) · [State machine](docs/request-state-machine.md) · [API](docs/api-documentation.md) |
 | Operations | [SLA](docs/sla-monitoring.md) · [Analytics](docs/dashboard-analytics.md) · [Security](docs/security.md) · [Testing](docs/testing.md) · [Deployment](docs/deployment.md) |
-| Portfolio | [Case study](docs/case-study.md) · [Final verification](docs/final-verification.md) |
+| Portfolio | [BA evidence pack](docs/ba-evidence-pack.md) · [UAT-style acceptance matrix](docs/uat-matrix.md) · [Case study](docs/case-study.md) · [Final verification](docs/final-verification.md) |
 
 ## Known limitations
 
